@@ -28,7 +28,6 @@ import scala.Product2;
 import scala.Tuple2;
 import scala.collection.Iterator;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Closeables;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -185,10 +184,7 @@ public final class RemoteBypassMergeSortShuffleWriter<K, V> extends ShuffleWrite
         RemoteShuffleManager$.MODULE$.getResolver().shuffleServerId(), partitionLengths, mapId);
   }
 
-  @VisibleForTesting
-  long[] getPartitionLengths() {
-    return partitionLengths;
-  }
+
 
   /**
    * Concatenate all of the per-partition files into a single combined file.
@@ -266,5 +262,10 @@ public final class RemoteBypassMergeSortShuffleWriter<K, V> extends ShuffleWrite
         return None$.empty();
       }
     }
+  }
+
+  @Override
+  public long[] getPartitionLengths() {
+      return partitionLengths;
   }
 }

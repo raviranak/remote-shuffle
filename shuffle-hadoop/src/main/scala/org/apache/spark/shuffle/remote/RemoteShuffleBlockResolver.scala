@@ -21,7 +21,6 @@ import java.io._
 import java.nio.{ByteBuffer, LongBuffer}
 import java.util.UUID
 import java.util.function.Consumer
-
 import scala.collection.mutable
 import com.google.common.cache.{CacheBuilder, CacheLoader, Weigher}
 import org.apache.hadoop.fs.{FSDataInputStream, Path}
@@ -31,10 +30,10 @@ import org.apache.spark.internal.config.BLOCK_MANAGER_PORT
 import org.apache.spark.network.BlockTransferService
 import org.apache.spark.network.buffer.ManagedBuffer
 import org.apache.spark.network.netty.RemoteShuffleTransferService
-import org.apache.spark.network.shuffle.ShuffleIndexRecord
+import org.apache.spark.network.shuffle.{MergedBlockMeta, ShuffleIndexRecord}
 import org.apache.spark.network.util.JavaUtils
 import org.apache.spark.shuffle.ShuffleBlockResolver
-import org.apache.spark.storage.{BlockId, ShuffleBlockBatchId, ShuffleBlockId, TempLocalBlockId, TempShuffleBlockId}
+import org.apache.spark.storage.{BlockId, ShuffleBlockBatchId, ShuffleBlockId, ShuffleMergedBlockId, TempLocalBlockId, TempShuffleBlockId}
 import org.apache.spark.util.Utils
 
 /**
@@ -349,6 +348,10 @@ class RemoteShuffleBlockResolver(conf: SparkConf) extends ShuffleBlockResolver w
           s"Caused by: ${e.toString}\n${e.getStackTrace.mkString("\n")}")
     }
   }
+
+  override def getMergedBlockData(blockId: ShuffleMergedBlockId, dirs: Option[Array[String]]): Seq[ManagedBuffer] = ???
+
+  override def getMergedBlockMeta(blockId: ShuffleMergedBlockId, dirs: Option[Array[String]]): MergedBlockMeta = ???
 }
 
 // For index cache feature, this is the data structure stored in Guava cache

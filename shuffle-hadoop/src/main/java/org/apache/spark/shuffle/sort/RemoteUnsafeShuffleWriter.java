@@ -474,4 +474,9 @@ public class RemoteUnsafeShuffleWriter<K, V> extends ShuffleWriter<K, V> {
       }
     }
   }
+
+  @Override
+  public long[] getPartitionLengths() {
+    return new long[0];
+  }
 }

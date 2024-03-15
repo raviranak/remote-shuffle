@@ -105,4 +105,6 @@ private[spark] class RemoteShuffleWriter[K, V, C](
       }
     }
   }
+
+  override def getPartitionLengths(): Array[Long] = ???
 }

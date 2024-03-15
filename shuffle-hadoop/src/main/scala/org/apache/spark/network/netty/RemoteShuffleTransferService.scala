@@ -50,7 +50,7 @@ private[spark] class RemoteShuffleTransferService(
   // TODO: Don't use Java serialization, use a more cross-version compatible serialization format.
   private val serializer = new JavaSerializer(conf)
   private val authEnabled = securityManager.isAuthenticationEnabled()
-  private val transportConf = SparkTransportConf.fromSparkConf(conf, "shuffle", numCores)
+  private val transportConfLocal = SparkTransportConf.fromSparkConf(conf, "shuffle", numCores)
 
   private[this] var transportContext: TransportContext = _
   private[this] var server: TransportServer = _
@@ -64,10 +64,10 @@ private[spark] class RemoteShuffleTransferService(
     var serverBootstrap: Option[TransportServerBootstrap] = None
     var clientBootstrap: Option[TransportClientBootstrap] = None
     if (authEnabled) {
-      serverBootstrap = Some(new AuthServerBootstrap(transportConf, securityManager))
-      clientBootstrap = Some(new AuthClientBootstrap(transportConf, conf.getAppId, securityManager))
+      serverBootstrap = Some(new AuthServerBootstrap(transportConfLocal, securityManager))
+      clientBootstrap = Some(new AuthClientBootstrap(transportConfLocal, conf.getAppId, securityManager))
     }
-    transportContext = new TransportContext(transportConf, rpcHandler)
+    transportContext = new TransportContext(transportConfLocal, rpcHandler)
     clientFactory = transportContext.createClientFactory(clientBootstrap.toSeq.asJava)
     server = createServer(serverBootstrap.toList)
     appId = conf.getAppId
@@ -119,11 +119,11 @@ private[spark] class RemoteShuffleTransferService(
         }
       }
 
-      val maxRetries = transportConf.maxIORetries()
+      val maxRetries = transportConfLocal.maxIORetries()
       if (maxRetries > 0) {
         // Note this Fetcher will correctly handle maxRetries == 0; we avoid it just in case there's
         // a bug in this code. We should remove the if statement once we're sure of the stability.
-        new RetryingBlockFetcher(transportConf, blockFetchStarter, blockIds, listener).start()
+        new RetryingBlockFetcher(transportConfLocal, blockFetchStarter, blockIds, listener).start()
       } else {
         blockFetchStarter.createAndStart(blockIds, listener)
       }

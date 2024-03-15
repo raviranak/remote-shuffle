@@ -11,12 +11,12 @@
     <packaging>pom</packaging>
 
     <properties>
-	    <scala.version>2.12.10</scala.version>
-	    <scala.binary.version>2.12</scala.binary.version>
+        <scala.version>2.12.10</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <spark.version>3.1.1</spark.version>
+        <spark.version>3.3.1</spark.version>
     </properties>
 
     <build>
@@ -259,7 +259,7 @@
     </dependencyManagement>
 
     <modules>
-        <module>shuffle-daos</module>
+<!--        <module>shuffle-daos</module>-->
         <module>shuffle-hadoop</module>
     </modules>
 
